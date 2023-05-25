@@ -2,15 +2,12 @@
 
 {% block content %}
   <!-- Recommendation Content -->
-  <h2>Movies</h2>
+  <h2>Recommended Movies</h2>
 
   <ul>
-    {% for movie in recommendations %}
+    {% for movie in recommendation %}
     <li>
-      <h1>{{ movie.title }}</h1>
-      <p>Genre: {{ movie.genres }}</p>
-      
-    </div>
+      <h1>{{ movie }}</h1>
       <!-- Add more movie information here -->
     </li>
     {% endfor %}

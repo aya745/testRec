@@ -249,7 +249,7 @@ def moviesPage(request):
 
 def recommendation(request):
     if request.method == 'POST':
-        movie_title = request.POST.get('movie_title')
+        movie_title = request.POST.get('movie.title')
         dataset = pd.merge(pd.merge(movies, ratings),users)
     # Break up the big genre string into a string array
         movies['genres'] = movies['genres'].str.split('|')
@@ -275,6 +275,6 @@ def recommendation(request):
     
     
     context = {
-        'recommendations': recommendations
+        'recommendation': recommendation
     }
     return render(request, 'base/recommendation.html',context)
