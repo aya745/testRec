@@ -14,6 +14,9 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 from sklearn.metrics.pairwise import linear_kernel
+from imdb import IMDb
+from PIL import Image
+from io import BytesIO
 # Create your views here.
 
 #rooms = [
@@ -238,18 +241,26 @@ def moviesPage(request):
     movies_head = movies.head(10)  # Get the first 10 rows of the DataFrame
     users_head = users.head(10)  # Get the first 10 rows of the DataFrame
     ratings_head = ratings.head(10)  # Get the first 10 rows of the DataFrame
+    
+    
     context = {
         'movies': movies_head.to_dict(orient='records') , # Convert DataFrame rows to a list of dictionaries
         'users': users_head.to_dict(orient='records'),  # Convert DataFrame rows to a list of dictionaries
         'ratings': ratings_head.to_dict(orient='records')  # Convert DataFrame rows to a list of dictionaries
     }
+    
 
     return render(request, 'base/moviesPage.html', context)
 
 
 def recommendation(request):
+    print("test")
+    recommendation = []
     if request.method == 'POST':
+        
+        #movie_title = "Jumanji (1995)"
         movie_title = request.POST.get('movie.title')
+        
         dataset = pd.merge(pd.merge(movies, ratings),users)
     # Break up the big genre string into a string array
         movies['genres'] = movies['genres'].str.split('|')
@@ -264,6 +275,7 @@ def recommendation(request):
         indices = pd.Series(movies.index, index=movies['title'])
     # Function that get movie recommendations based on the cosine similarity score of movie genres
         def genre_recommendations(title):
+            
             idx = indices[title]
             sim_scores = list(enumerate(cosine_sim[idx]))
             sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
@@ -271,10 +283,11 @@ def recommendation(request):
             movie_indices = [i[0] for i in sim_scores]
             return titles.iloc[movie_indices].tolist()
         # Call your recommendation algorithm using the clicked movie title
-        recommendations = genre_recommendations(movie_title)
+        recommendation = genre_recommendations(movie_title)
+        
+        
     
-    
-    context = {
-        'recommendation': recommendation
-    }
-    return render(request, 'base/recommendation.html',context)
+        context = {
+            'recommendations': recommendation
+        }
+        return render(request, 'base/recommendation.html',context)

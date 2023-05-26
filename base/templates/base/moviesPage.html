@@ -9,11 +9,13 @@
     <li>
       <h1>{{ movie.title }}</h1>
       <p>Genre: {{ movie.genres }}</p>
-      <a class="btn btn--main" href="{% url 'recommendation' %}">
-        See similar Movies
-      </a>
-    </div>
-      <!-- Add more movie information here -->
+      <form action="{% url 'recommendation' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="movie.title" value="{{ movie.title }}">
+        <button type="submit" class="btn btn--main">
+          See similar Movies
+        </button>
+      </form>
     </li>
     {% endfor %}
   </ul>
